@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -29,7 +31,6 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     public Dictionary<int, int> PlayerScores { get; private set; }
     public int MatchTimer { get; private set; } = 0;    
     private int _playerReadyCount = 0;
-
     private float _timerCount = 0f;
     private void Awake()
     {
@@ -58,6 +59,8 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         PhotonNetwork.Instantiate(PLAYER_PREFAB_PATH, Vector3.zero, Quaternion.identity);
 
+        
+        
         // Set up the player score.
         PlayerScores = new Dictionary<int, int>();
         foreach (var player in PhotonNetwork.PlayerList)
@@ -109,7 +112,10 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
     private void EndMatch()
     {
         MatchState = MatchStateEnum.Ended;
-        OnMatchEnd?.Invoke();             
+        OnMatchEnd?.Invoke();
+        
+        if(!PhotonNetwork.IsMasterClient)
+            PhotonNetwork.LeaveRoom(false);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -147,5 +153,41 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
             _timerCount -= 1f;
         }
     }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+        if (PhotonNetwork.IsMasterClient && MatchState == MatchStateEnum.Ended)
+        {
+            // Wait for all the clients to leave, so we check if the master client is the only one active
+            int count = 0;
+            foreach (var player in PhotonNetwork.PlayerList)
+                count += player.IsInactive ? 0 : 1; // We do not count inactive players after the game ended.
+            
+            if(count == 1)
+                PhotonNetwork.LeaveRoom();
+        }
+    }
+
+    private void OnGUI()
+    {
+        if (GUI.Button(new Rect(10, 10, 150, 30), "Disconnect"))
+        {
+            PhotonNetwork.Disconnect();
+        }
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        base.OnDisconnected(cause);
+        StartCoroutine(ReconnectCoroutine());
+    }
+
+    private IEnumerator ReconnectCoroutine()
+    {
+        if (!PhotonNetwork.ReconnectAndRejoin())
+            yield return new WaitForSeconds(1f);
+    }
+
     
 }

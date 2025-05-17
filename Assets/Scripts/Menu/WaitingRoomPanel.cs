@@ -33,7 +33,7 @@ public class WaitingRoomPanel : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.IsMasterClient) return;
         
         PhotonNetwork.CurrentRoom.IsVisible = false;
-        
+        PhotonNetwork.CurrentRoom.PlayerTtl = -1;
         SceneLoader.LoadGameSceneAsync();
         
     }

@@ -17,8 +17,9 @@ public class RoomSetup
         GenerateRoomID();
         Options = new RoomOptions();
         Options.MaxPlayers = 4;
-        Options.PlayerTtl = 5000;
+        Options.PlayerTtl = 0;
         Options.EmptyRoomTtl = 0;
+        Options.CleanupCacheOnLeave = true;
         Options.IsOpen = true;
 
         PropertiesHandler = new RoomPropertiesHandler();

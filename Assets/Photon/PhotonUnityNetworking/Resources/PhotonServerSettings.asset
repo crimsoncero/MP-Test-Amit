@@ -44,5 +44,5 @@ MonoBehaviour:
   - EndMatch
   - RPC_TryGive
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
+  ShowSettings: 1
   DevRegionSetOnce: 1

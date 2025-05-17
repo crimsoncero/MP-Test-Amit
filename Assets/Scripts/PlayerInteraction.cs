@@ -1,8 +1,9 @@
 using System;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
-public class PlayerInteraction : MonoBehaviourPun
+public class PlayerInteraction : MonoBehaviourPunCallbacks
 {
     private const string RPC_TRY_PICKUP = "RPC_TryPickup";
     private const string RPC_Try_Drop = "RPC_TryDrop";
@@ -38,6 +39,7 @@ public class PlayerInteraction : MonoBehaviourPun
             if (photonView.IsMine) // only update ui for client character
             {
                 UIManager.Instance.ShowBoxMenu(true);
+                UIManager.Instance.ShowButtonsForState(false);
             }
         }
     }
@@ -48,7 +50,7 @@ public class PlayerInteraction : MonoBehaviourPun
         nearbyBox = null;
         if (photonView.IsMine) // only update ui for client character
         {
-            UIManager.Instance.HideEverything();
+            UIManager.Instance.ShowBoxMenu(false);
         }
     }
     
@@ -62,6 +64,7 @@ public class PlayerInteraction : MonoBehaviourPun
             
             if (photonView.IsMine) // only update ui for client character
             {
+                UIManager.Instance.ShowBoxMenu(true);
                 UIManager.Instance.ShowGiveButton(true);
             }
         }
@@ -81,17 +84,17 @@ public class PlayerInteraction : MonoBehaviourPun
     }
     public void TryPickup()
     {
-       photonView.RPC(RPC_TRY_PICKUP, RpcTarget.All);
+       photonView.RPC(RPC_TRY_PICKUP, RpcTarget.AllBuffered);
     }
 
     public void TryDrop()
     {
-        photonView.RPC(RPC_Try_Drop, RpcTarget.All);
+        photonView.RPC(RPC_Try_Drop, RpcTarget.AllBuffered);
     }
 
     public void TryGive()
     {
-        photonView.RPC(RPC_Try_Give, RpcTarget.All);
+        photonView.RPC(RPC_Try_Give, RpcTarget.AllBuffered);
     }
 
     public void OnReceive()
@@ -139,7 +142,7 @@ public class PlayerInteraction : MonoBehaviourPun
             if (photonView.IsMine) // only update ui for client character
             {
                 UIManager.Instance.ShowButtonsForState(false);
-                UIManager.Instance.HideEverything();
+                UIManager.Instance.ShowBoxMenu(false);
             }
           
         }
@@ -160,9 +163,19 @@ public class PlayerInteraction : MonoBehaviourPun
             {
                 UIManager.Instance.ShowButtonsForState(false);
                 UIManager.Instance.ShowGiveButton(false);
-                UIManager.Instance.HideEverything();
+                UIManager.Instance.ShowBoxMenu(false);
             }
           
+        }
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+        if (otherPlayer.ActorNumber == photonView.OwnerActorNr)
+        {
+            // If a player holding a box left/dc, drop their box
+            heldBox.Interact(this);
         }
     }
 

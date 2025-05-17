@@ -1,6 +1,7 @@
+using Photon.Pun;
 using UnityEngine;
 
-public class PickupBox : BoxBase
+public class PickupBox : BoxBase, IPunObservable
 {
     
     private Transform originalParent;
@@ -41,6 +42,17 @@ public class PickupBox : BoxBase
         originalRigidBody.isKinematic = false;
         interactor.DropBox();
     }
-    
-    
+
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext((int)Status);
+        }
+        else
+        {
+            Status = (BoxStatus)stream.ReceiveNext();
+        }
+    }
 }

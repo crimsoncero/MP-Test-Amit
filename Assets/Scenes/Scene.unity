@@ -604,6 +604,8 @@ MonoBehaviour:
   leaderboardPanel: {fileID: 2148277881141725315}
   scoreBoard: {fileID: 2148277881141725314}
   scoreElementPrefab: {fileID: 2615836402033614066, guid: 3fc99aed688bdbd45944ad29ef5814a4, type: 3}
+  returnToMenuButton: {fileID: 2148277881141725316}
+  disconnectPanel: {fileID: 2148277881141725317}
 --- !u!1 &832239340
 GameObject:
   m_ObjectHideFlags: 0
@@ -3939,6 +3941,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8127585400793746127, guid: 26ebc87e2f4bbd64c93c625b2a66c871, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8127585400793746127, guid: 26ebc87e2f4bbd64c93c625b2a66c871, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8127585400793746127, guid: 26ebc87e2f4bbd64c93c625b2a66c871, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8160778066812394386, guid: 26ebc87e2f4bbd64c93c625b2a66c871, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -4160,5 +4174,21 @@ RectTransform:
 --- !u!224 &2148277881141725315 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 670567952280364145, guid: 26ebc87e2f4bbd64c93c625b2a66c871, type: 3}
+  m_PrefabInstance: {fileID: 2148277881141725312}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2148277881141725316 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8127585400793746127, guid: 26ebc87e2f4bbd64c93c625b2a66c871, type: 3}
+  m_PrefabInstance: {fileID: 2148277881141725312}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &2148277881141725317 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1519857280411311070, guid: 26ebc87e2f4bbd64c93c625b2a66c871, type: 3}
   m_PrefabInstance: {fileID: 2148277881141725312}
   m_PrefabAsset: {fileID: 0}

@@ -1,10 +1,11 @@
 using System;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviourPun
+public class UIManager : MonoBehaviourPunCallbacks
 {
     public static UIManager Instance { get; private set; }
 
@@ -24,6 +25,10 @@ public class UIManager : MonoBehaviourPun
     [SerializeField] private Transform leaderboardPanel;
     [SerializeField] private Transform scoreBoard;
     [SerializeField] private PlayerScoreElement scoreElementPrefab;
+    [SerializeField] private Button returnToMenuButton;
+
+    [Header("Disconnect")] 
+    [SerializeField] private Transform disconnectPanel;
     
     private void Awake()
     {
@@ -47,6 +52,8 @@ public class UIManager : MonoBehaviourPun
         pickupButton.onClick.AddListener(myPlayerInteraction.TryPickup);
         dropButton.onClick.AddListener(myPlayerInteraction.TryDrop);
         giveButton.onClick.AddListener(myPlayerInteraction.TryGive);
+        returnToMenuButton.onClick.AddListener(ReturnToMenu);
+        returnToMenuButton.interactable = false;
     }
 
     private void UpdateTimer()
@@ -84,28 +91,38 @@ public class UIManager : MonoBehaviourPun
     {
         boxMenuPanel.SetActive(show);
     }
-
-    public void HideAllBoxButtons()
-    {
-        ShowPickupButton(false);
-        ShowDropButton(false);
-        ShowGiveButton(false);
-    }
-
     public void ShowButtonsForState(bool isHoldingBox)
     {
         ShowPickupButton(!isHoldingBox);
         ShowDropButton(isHoldingBox);
     }
     
-    public void HideEverything()
-    {
-      //  HideAllBoxButtons();
-        ShowBoxMenu(false);
-    }
-
     public void UpdateScore(int score)
     {
         scoreText.text = $"Score: {score}";
+    }
+
+    public void ReturnToMenu()
+    {
+        if(PhotonNetwork.InRoom == false)
+            SceneLoader.LoadMenuSceneAsync();
+    }
+    
+    public override void OnLeftRoom()
+    {
+        base.OnLeftRoom();
+        returnToMenuButton.interactable = true;
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        base.OnDisconnected(cause);
+        disconnectPanel.gameObject.SetActive(true);
+    }
+
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        disconnectPanel.gameObject.SetActive(false);
     }
 }

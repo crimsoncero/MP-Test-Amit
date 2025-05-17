@@ -9,7 +9,7 @@ using UnityEngine;
 public abstract  class BoxBase : MonoBehaviourPun,IInteractable
 {
     
-    public BoxStatus Status { get; protected set; } = BoxStatus.Idle;
+    [field: SerializeField] public BoxStatus Status { get; protected set; } = BoxStatus.Idle;
     
     public abstract void Interact(PlayerInteraction interactor);
     
