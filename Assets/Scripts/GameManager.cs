@@ -62,11 +62,16 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
         
         
         // Set up the player score.
-        PlayerScores = new Dictionary<int, int>();
-        foreach (var player in PhotonNetwork.PlayerList)
+        if (PlayerScores == null)
         {
-            PlayerScores.Add(player.ActorNumber, 0);
+            PlayerScores = new Dictionary<int, int>();
+            foreach (var player in PhotonNetwork.PlayerList)
+            {
+                if(!PlayerScores.ContainsKey(player.ActorNumber))
+                    PlayerScores.Add(player.ActorNumber, 0);
+            }
         }
+        
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -99,7 +104,6 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
             return;
         
         PlayerScores[player.photonView.OwnerActorNr] = player.CurrentScore;
-        
     }
     
     [PunRPC]
@@ -142,6 +146,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable
                 PlayerScores[key] = value;
             }
         }
+
     }
 
     private void UpdateTimer()

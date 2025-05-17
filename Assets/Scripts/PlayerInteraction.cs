@@ -28,6 +28,9 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
         if (photonView.IsMine) // only update ui for client character
         {
             GameManager.Instance.RegisterPlayer(this);
+            
+            if(GameManager.Instance.PlayerScores.TryGetValue(photonView.OwnerActorNr, out var score))
+                currentScore = score;
         }
     }
 
@@ -172,12 +175,13 @@ public class PlayerInteraction : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
+        
+        if (GameManager.Instance.MatchState == MatchStateEnum.Ended) return;
+        
         if (otherPlayer.ActorNumber == photonView.OwnerActorNr)
         {
             // If a player holding a box left/dc, drop their box
-            heldBox.Interact(this);
+            TryDrop();
         }
     }
-
-    
 }

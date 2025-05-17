@@ -38,6 +38,12 @@ public class UIManager : MonoBehaviourPunCallbacks
             return;
         }
         Instance = this;
+
+    }
+
+    private void Start()
+    {
+        GameManager.Instance.OnMatchEnd += ShowLeaderboard;
     }
 
     private void Update()
@@ -48,7 +54,6 @@ public class UIManager : MonoBehaviourPunCallbacks
     public void Init()
     {
         var myPlayerInteraction = GameManager.Instance.MyPlayerInteraction;
-        GameManager.Instance.OnMatchEnd += ShowLeaderboard;
         pickupButton.onClick.AddListener(myPlayerInteraction.TryPickup);
         dropButton.onClick.AddListener(myPlayerInteraction.TryDrop);
         giveButton.onClick.AddListener(myPlayerInteraction.TryGive);
